@@ -2,6 +2,7 @@ package table;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
+import model.User;
 
 public class TableUser extends AbstractTableModel {
 	List<User> ls;

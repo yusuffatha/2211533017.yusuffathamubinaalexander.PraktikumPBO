@@ -2,6 +2,7 @@ package table;
 
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import model.Service;
 
 public class TableService extends AbstractTableModel{
 	List<Service> ls;

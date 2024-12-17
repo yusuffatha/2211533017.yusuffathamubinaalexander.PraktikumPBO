@@ -6,20 +6,29 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import DAO.CostumerRepo;
+import DAO.UserRepo;
 import model.Costumer;
+import model.CustomerBuilder;
+import model.User;
+import table.tableCostumer;
+import table.TableUser;
 
+import javax.swing.JScrollPane;
+import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.util.List;
+
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JTable;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JTable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
 
 public class CostumerFrame extends JFrame {
 
@@ -46,29 +55,19 @@ public class CostumerFrame extends JFrame {
 			}
 		});
 	}
-	public void reset() {
-		txtNama.setText("");
-		txtAlamat.setText("");
-		txtNohp.setText("");
-	}
 	
 	CostumerRepo cst = new CostumerRepo();
 	List<Costumer> ls;
 	public String id;
 	
-	public void loadTable() {
-		ls = cst.show();
-		TableCostumer tc = new TableCostumer(ls);
-		tableCostumer.setModel(tc);
-		tableCostumer.getTableHeader().setVisible(true);
-	}
-
+	
 	/**
 	 * Create the frame.
 	 */
 	public CostumerFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 601, 499);
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -76,69 +75,78 @@ public class CostumerFrame extends JFrame {
 		contentPane.setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 10, 567, 227);
+		panel.setBounds(10, 10, 766, 260);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Nama Pelanggan");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel.setBounds(38, 47, 94, 24);
-		panel.add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("Alamat");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel_1.setBounds(38, 81, 61, 24);
-		panel.add(lblNewLabel_1);
-		
-		JLabel lblNewLabel_2 = new JLabel("No.HP");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel_2.setBounds(38, 119, 45, 13);
-		panel.add(lblNewLabel_2);
+		JLabel lblNama = new JLabel("Nama Pelanggan");
+		lblNama.setFont(new Font("HP Simplified Jpan Light", Font.PLAIN, 16));
+		lblNama.setBounds(26, 25, 121, 25);
+		panel.add(lblNama);
 		
 		txtNama = new JTextField();
-		txtNama.setBounds(154, 51, 316, 19);
+		txtNama.setBounds(165, 31, 505, 19);
 		panel.add(txtNama);
 		txtNama.setColumns(10);
 		
+		JLabel lblAlamat = new JLabel("Alamat");
+		lblAlamat.setFont(new Font("HP Simplified Jpan Light", Font.PLAIN, 16));
+		lblAlamat.setBounds(89, 74, 58, 25);
+		panel.add(lblAlamat);
+		
 		txtAlamat = new JTextField();
-		txtAlamat.setBounds(154, 85, 316, 19);
-		panel.add(txtAlamat);
 		txtAlamat.setColumns(10);
+		txtAlamat.setBounds(165, 80, 505, 19);
+		panel.add(txtAlamat);
+		
+		JLabel lblNohp = new JLabel("No. HP");
+		lblNohp.setFont(new Font("HP Simplified Jpan Light", Font.PLAIN, 16));
+		lblNohp.setBounds(89, 122, 51, 25);
+		panel.add(lblNohp);
 		
 		txtNohp = new JTextField();
-		txtNohp.setBounds(154, 117, 316, 19);
-		panel.add(txtNohp);
 		txtNohp.setColumns(10);
+		txtNohp.setBounds(165, 128, 505, 19);
+		panel.add(txtNohp);
 		
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Costumer costumer = new Costumer();
-				costumer.setNama(txtNama.getText());
-				costumer.setAlamat(txtAlamat.getText());
-				costumer.setNohp(txtNohp.getText());
-				cst.save(costumer);
+				Costumer cs = new CustomerBuilder()
+						.setNama(txtNama.getText())
+						.setAlamat(txtAlamat.getText())
+						.setHp(txtNohp.getText())
+						.build();
+				cst.save(cs);
 				reset();
 				loadTable();
 			}
 		});
-		btnSave.setBounds(38, 173, 85, 24);
+		btnSave.setFont(new Font("HP Simplified Jpan Light", Font.PLAIN, 16));
+		btnSave.setBounds(165, 193, 85, 40);
 		panel.add(btnSave);
 		
 		JButton btnUpdate = new JButton("Update");
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Costumer costumer = new Costumer();
-				costumer.setNama(txtNama.getText());
-				costumer.setAlamat(txtAlamat.getText());
-				costumer.setNohp(txtNohp.getText());
-				costumer.setId(id);
-				cst.update(costumer);
-				reset();
-				loadTable();
+				if(id != null) {
+					Costumer cs = new CustomerBuilder()
+							.setNama(txtNama.getText())
+							.setAlamat(txtAlamat.getText())
+							.setHp(txtNohp.getText())
+							.setId(id)
+							.build();
+					cst.update(cs);
+					reset();
+					loadTable();
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Silahkan pilih data yang akan dihapus");
+				}
 			}
 		});
-		btnUpdate.setBounds(133, 173, 85, 24);
+		btnUpdate.setFont(new Font("HP Simplified Jpan Light", Font.PLAIN, 16));
+		btnUpdate.setBounds(271, 193, 85, 40);
 		panel.add(btnUpdate);
 		
 		JButton btnDelete = new JButton("Delete");
@@ -153,12 +161,23 @@ public class CostumerFrame extends JFrame {
 				}
 			}
 		});
-		btnDelete.setBounds(228, 173, 85, 24);
+		btnDelete.setFont(new Font("HP Simplified Jpan Light", Font.PLAIN, 16));
+		btnDelete.setBounds(383, 193, 85, 40);
 		panel.add(btnDelete);
 		
 		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(385, 173, 85, 24);
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				reset();
+			}
+		});
+		btnCancel.setFont(new Font("HP Simplified Jpan Light", Font.PLAIN, 16));
+		btnCancel.setBounds(585, 193, 85, 40);
 		panel.add(btnCancel);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 280, 766, 273);
+		contentPane.add(scrollPane);
 		
 		tableCostumer = new JTable();
 		tableCostumer.addMouseListener(new MouseAdapter() {
@@ -167,10 +186,25 @@ public class CostumerFrame extends JFrame {
 				id = tableCostumer.getValueAt(tableCostumer.getSelectedRow(), 0).toString();
 				txtNama.setText(tableCostumer.getValueAt(tableCostumer.getSelectedRow(), 1).toString());
 				txtAlamat.setText(tableCostumer.getValueAt(tableCostumer.getSelectedRow(), 2).toString());
-				txtNohp.setText(tableCostumer.getValueAt(tableCostumer.getSelectedRow(), 3).toString());	
+				txtNohp.setText(tableCostumer.getValueAt(tableCostumer.getSelectedRow(), 3).toString());
 			}
 		});
-		tableCostumer.setBounds(10, 247, 567, 205);
-		contentPane.add(tableCostumer);
+		scrollPane.setViewportView(tableCostumer);
+		
+		
+		
+		
 	}
+	public void loadTable() {
+		ls = cst.show();
+		tableCostumer tc = new tableCostumer(ls);
+		tableCostumer.setModel(tc);
+		tableCostumer.getTableHeader().setVisible(true);
+	}
+	public void reset() {
+		txtNama.setText("");
+		txtAlamat.setText("");
+		txtNohp.setText("");
+	}
+
 }
