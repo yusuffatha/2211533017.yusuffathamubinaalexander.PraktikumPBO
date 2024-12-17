@@ -5,13 +5,18 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import error.ValidationException;
+import model.User;
+import service.LoginService;
+import util.ValidationUtil;
+
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.Color;
-import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -70,7 +75,7 @@ public class LoginFrame extends JFrame {
 		contentPane.add(txtPassword);
 		txtPassword.setColumns(10);
 		
-		JLabel lblNewLabel_1 = new JLabel("sedang males nyuci? Laundry siap melayani");
+		JLabel lblNewLabel_1 = new JLabel("Masukkan data Anda");
 		lblNewLabel_1.setFont(new Font("Tw Cen MT", Font.BOLD, 12));
 		lblNewLabel_1.setBounds(94, 40, 248, 28);
 		contentPane.add(lblNewLabel_1);
@@ -79,7 +84,7 @@ public class LoginFrame extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				if(User.Login(txtUsername.getText(), txtPassword.getText())) {
+				if(User.login(txtUsername.getText(), txtPassword.getText())) {
 					JOptionPane.showMessageDialog(null,  "Yeyy berhasil login");
 //					cara 1 : pindah dari login ke main frame
 					MainFrame mf = new MainFrame();
@@ -98,4 +103,31 @@ public class LoginFrame extends JFrame {
 		btnNewButton.setBounds(171, 178, 85, 21);
 		contentPane.add(btnNewButton);
 	}
+
+	public void actionPerformed(ActionEvent e) {
+		String userValue = txtUsername.getText();
+		String passValue = txtPassword.getText();
+
+		// Create user object
+		User user = new User(userValue, passValue);
+
+		try {
+			ValidationUtil.validate(user);
+			LoginService loginService = new LoginService();
+			if (loginService.authenticate(user)) {
+				System.out.println("Login successful!");
+				new MainFrame().setVisible(true);
+				dispose();
+			} else {
+				System.out.println("Invalid username or password.");
+				JOptionPane.showMessageDialog(null, "Login Gagal, Invalid username or password.");
+			}
+		} catch (ValidationException | NullPointerException exception) {
+			System.out.println("Data tidak valid : " + exception.getMessage());
+			JOptionPane.showMessageDialog(null, "Login Gagal: " + exception.getMessage());
+		} finally {
+			System.out.println("Selalu di eksekusi");
+		}
+	}
+
 }

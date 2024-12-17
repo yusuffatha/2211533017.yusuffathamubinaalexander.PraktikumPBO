@@ -1,5 +1,8 @@
 package DAO;
 
+import java.util.List;
+import model.User;
+
 public interface UserDao {
 	void save (User user);
 	public List<User> show();

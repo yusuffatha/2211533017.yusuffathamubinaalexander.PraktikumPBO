@@ -4,10 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import config.Database;
+import config.DatabaseHelper;
+import model.Service;
 
 public class ServiceRepo implements ServiceDAO {
 	private Connection connection;
@@ -17,7 +21,7 @@ public class ServiceRepo implements ServiceDAO {
 	final String update = "Update service SET jenis = ?, status = ?, harga = ? WHERE id = ?;";
 	
 	public ServiceRepo() {
-		connection = Database.koneksi();
+		connection = DatabaseHelper.getConnection();
 	}
 	
 	@Override
@@ -98,5 +102,6 @@ public class ServiceRepo implements ServiceDAO {
 			}
 		}
 	}
+	
 
 }

@@ -5,11 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import config.Database;
+import config.DatabaseHelper;
 import model.User;
 
 public class UserRepo implements UserDao{
@@ -20,7 +21,7 @@ public class UserRepo implements UserDao{
 	final String update = "UPDATE user SET name=?, username=?, password=?, WHERE id=?;";
 	
 public UserRepo() {
-	connection = Database.koneksi();
+	connection = DatabaseHelper.getConnection();
 }
 @Override
 public void save(User user) {
